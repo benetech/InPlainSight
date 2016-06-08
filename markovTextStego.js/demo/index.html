@@ -1,0 +1,243 @@
+<!doctype html>
+<html>
+  <head>
+    <title>markovTextStego.js Demo</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style type="text/css">
+      body { overflow-x: hidden; }
+      #demo-container { padding: 10px; }
+    </style>
+    <script src="js/jquery-1.10.2.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/corpora.js"></script>
+    <script src="../src/markovTextStego.js"></script>
+  </head>
+  <body>
+    <a href="https://github.com/jthuraisamy/markovTextStego.js/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+    <div class="jumbotron">
+      <div class="container">
+        <h1>markovTextStego.js <small>by Jackson Thuraisamy</small></h1>
+        <p>Text steganography library for JavaScript</p>
+      </div>
+    </div>
+    <div id="demo-container">
+      <div class="row">
+        <div class="col-md-4">
+          <!-- Corpus Selection Panel -->
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title">Corpus Selection</h3>
+            </div>
+            <div class="panel-body">
+              <select id="corpus-selector" class="form-control">
+                <option value="prince">The Prince (Niccol&ograve; Machiavelli)</option>
+                <option value="revelations">Revelations (King James Version of the Bible)</option>
+                <option value="romeo">Romeo &amp; Juliet (William Shakespeare)</option>
+                <option value="custom">Custom...</option>
+              </select>
+              <br>
+              <textarea id="input-corpus"
+                        class="form-control"
+                        placeholder="Enter corpus text here..."
+                        rows="10"
+                        disabled></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <!-- Input Text Panel -->
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title">Input Text</h3>
+            </div>
+            <div class="panel-body">
+              <textarea id="input-text"
+                        class="form-control"
+                        placeholder="Enter input text here..."
+                        rows="10"></textarea>
+              <br>
+              <button id="encode-text"
+                      type="button"
+                      data-loading-text="Encoding text..."
+                      class="btn btn-primary btn-block"
+                      disabled>
+                Encode Text
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <!-- Output Text Panel -->
+          <div class="panel panel-success">
+            <div class="panel-heading">
+              <h3 class="panel-title">Output Text</h3>
+            </div>
+            <div class="panel-body">
+              <textarea id="output-text"
+                        class="form-control"
+                        rows="10"></textarea>
+              <br>
+              <button id="decode-text"
+                      type="button"
+                      data-loading-text="Decoding text..."
+                      class="btn btn-success btn-block"
+                      disabled>
+                Decode Text
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <!-- About Panel -->
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">About</h3>
+            </div>
+            <div class="panel-body">
+              <p>
+                This is a text steganography library for JavaScript adapted from <a href="http://www.hernan.moraldo.com.ar/">Hernan Moraldo</a>'s <a href="https://github.com/hmoraldo/markovTextStego">reference implementation</a> for &ldquo;<a href="http://www.41jaiio.org.ar/sites/default/files/3_WSegI_2012.pdf">An Approach for Text Steganography Based on Markov Chains</a>&rdquo;. This method produces more natural looking and less easily detectable texts than other Markov-based systems.
+                In this implementation, n-gram models support updating and n values of &ge; 1.
+              </p>
+              <p>Acknowledgements:</p>
+              <ul>
+                <li>Hernan Moraldo</li>
+                <li>Umair Idris</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <!-- Usage Panel -->
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Usage</h3>
+            </div>
+            <div class="panel-body">
+              <p>Initial setup:</p>
+              <pre>var stego = new MarkovTextStego();</pre>
+              <p>Create n-gram model:</p>
+              <pre>
+var corpus = [...];
+var model = new stego.NGramModel(n);
+model.import(corpus);</pre>
+              <p>Initialise the Codec:</p>
+              <pre>var codec = new stego.Codec(model);</pre>
+              <p>Encode / Decode:</p>
+              <pre>codec.encode('Hello World!');
+codec.decode('The Achaeans. And with a moderate force of which one has to remark that men ought either to the kingdom! In exchange for the priesthood? Were San Pietro ad Vincula. He was obliged to avoid one trouble without running into another but prudence consists in knowing how lukewarm he was priest and that those men who were besieging Gaeta. In charge of Messer Antonio the priest to the shoulders of the counsellors will think of himself.');</pre>
+              <p>Update the model with an array of additional corpus text:</p>
+              <pre>model.update(additionalCorpus);</pre>
+              <p>Change the model to a different one:</p>
+              <pre>codec.setModel(newModel);</pre>
+            </div>
+          </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+      // Initialise stego.
+      var models = {};
+      var stego = new MarkovTextStego();
+      var codec = new stego.Codec(null);
+      // Focus on input textarea.
+      $('#input-text').focus();
+      // When corpus selector changes:
+      $('#corpus-selector').change(function () {
+        if ($('#corpus-selector').val() === 'custom') {
+          $('#input-corpus').attr('disabled', false).focus();
+        } else {
+          $('#input-corpus').attr('disabled', true);
+        }
+      });
+      // Disable encode/decode button when there is nothing to process.
+      $('#input-text').bind('input propertychange', function (e) {
+        if ($('#input-text').val()) {
+          $('#encode-text').button('reset');
+        } else {
+          $('#encode-text').attr('disabled', true);
+        }
+      });
+      $('#output-text').bind('input propertychange', function (e) {
+        if ($('#output-text').val()) {
+          $('#decode-text').button('reset');
+        } else {
+          $('#decode-text').attr('disabled', true);
+        }
+      });
+      // When "Encode Text" button is clicked:
+      $('#encode-text').click(function () {
+        // Change button state.
+        $('#encode-text').button('loading');
+        $('#decode-text').attr('disabled', false);
+        // Create or set ngramModel.
+        var corpusOption = $('#corpus-selector').val();
+        if (corpusOption === 'custom') {
+          if (models.hasOwnProperty(corpusOption)) {
+            delete models[corpusOption];
+          }
+          models[corpusOption] = new stego.NGramModel(2);
+          try {
+            models[corpusOption].import([$('#input-corpus').val()]);
+          } catch (e) {
+            if (e instanceof stego.NGramModelException) {
+              alert('Invalid corpus specified. See limitations.\n\n' +
+                    'Error message: ' + e.message);
+              // Reset button state.
+              $('#decode-text').text('Decode Text');
+              $('#encode-text').button('reset');
+              return;
+            }
+          }
+        } else {
+          if (!models.hasOwnProperty(corpusOption)) {
+            models[corpusOption] = new stego.NGramModel(2);
+            models[corpusOption].import(corpora[corpusOption]);
+          }
+        }
+        codec.setModel(models[corpusOption]);
+        // Encode text.
+        try {
+          $('#output-text').val(codec.encode($('#input-text').val()));
+        } catch (e) {
+          if (e instanceof stego.CodecException) {
+            alert('Could not encode data.\n\n' +
+                  'Error message: ' + e.message);
+            // Reset button state.
+            $('#encode-text').text('Encode Text');
+            $('#decode-text').button('reset');
+            return;
+          }
+        }
+        // Reset input text.
+        $('#input-text').val('');
+        // Reset button state.
+        $('#encode-text').text('Encode Text');
+        $('#decode-text').button('reset');
+      });
+      // When "Decode Text" button is clicked:
+      $('#decode-text').click(function () {
+        // Change button state.
+        $('#decode-text').button('loading');
+        // Decode text.
+        try {
+          $('#input-text').val(codec.decode($.trim($('#output-text').val())));
+        } catch (e) {
+          if (e instanceof stego.CodecException) {
+            alert('Could not decode text.\n\n' +
+                  'Error message: ' + e.message);
+            // Reset button state.
+            $('#encode-text').text('Encode Text');
+            $('#decode-text').button('reset');
+            return;
+          }
+        }
+        // Reset output text.
+        $('#output-text').val('');
+        // Reset button state.
+        $('#decode-text').text('Decode Text');
+        $('#encode-text').button('reset');
+      });
+    </script>
+  </body>
+</html>
