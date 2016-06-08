@@ -11,11 +11,11 @@ Encryption use has become easier in recent history, still more often than not, e
 
 #Contributors:
 
-| Full Name | Gihub Handle |
-|-----------|--------------|
-|Wei-Yin Chen|wychen|
-|Ruonan Duan|ronatuan|
-|Ritendra Datta|___|
+| Full Name | Gihub Handle |email|
+|-----------|--------------|-----|
+|Wei-Yin Chen|wychen| |
+|Ruonan Duan|ronatuan| |
+|Ritendra Datta|___| |
 
 
 
