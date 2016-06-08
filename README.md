@@ -10,10 +10,11 @@ Encryption use has become easier in recent history, still more often than not, e
 ![alt text](https://github.com/benetech/InPlainSight/blob/master/ips.png?raw=true "Prototype Mockup")
 
 #Contributors:
+
 | Full Name | Gihub Handle |
 |-----------|--------------|
 |Wei-Yin Chen|wychen|
 
 
-#Day 2
+#Day 2; June 8th, 10:00am
 MTV-41-2-Seaside Training (35)
