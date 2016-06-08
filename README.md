@@ -17,4 +17,4 @@ Encryption use has become easier in recent history, still more often than not, e
 
 
 #Day 2; June 8th, 10:00am
-MTV-41-2-Seaside Training (35)
+Location: MTV-41-2-Seaside Training (35)
