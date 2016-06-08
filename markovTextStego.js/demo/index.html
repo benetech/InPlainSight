@@ -221,6 +221,32 @@ codec.decode('The Achaeans. And with a moderate force of which one has to remark
         $('#decode-text').button('loading');
         // Decode text.
         try {
+          // Create or set ngramModel.
+          var corpusOption = $('#corpus-selector').val();
+          if (corpusOption === 'custom') {
+            if (models.hasOwnProperty(corpusOption)) {
+              delete models[corpusOption];
+            }
+            models[corpusOption] = new stego.NGramModel(2);
+            try {
+              models[corpusOption].import([$('#input-corpus').val()]);
+            } catch (e) {
+              if (e instanceof stego.NGramModelException) {
+                alert('Invalid corpus specified. See limitations.\n\n' +
+                      'Error message: ' + e.message);
+                // Reset button state.
+                $('#decode-text').text('Decode Text');
+                $('#encode-text').button('reset');
+                return;
+              }
+            }
+          } else {
+            if (!models.hasOwnProperty(corpusOption)) {
+              models[corpusOption] = new stego.NGramModel(2);
+              models[corpusOption].import(corpora[corpusOption]);
+            }
+          }
+          codec.setModel(models[corpusOption]);
           $('#input-text').val(codec.decode($.trim($('#output-text').val())));
         } catch (e) {
           if (e instanceof stego.CodecException) {
