@@ -14,6 +14,9 @@ Encryption use has become easier in recent history, still more often than not, e
 | Full Name | Gihub Handle |
 |-----------|--------------|
 |Wei-Yin Chen|wychen|
+|Ruonan Duan|ronatuan|
+|Ritendra Datta|___|
+
 
 
 #Day 2; June 8th, 10:00am
