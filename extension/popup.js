@@ -38,7 +38,7 @@ $('#encode-text').click(function () {
     if (models.hasOwnProperty(corpusOption)) {
       delete models[corpusOption];
     }
-    models[corpusOption] = new stego.NGramModel(2);
+    models[corpusOption] = new stego.NGramModel(1);
     try {
       models[corpusOption].import([$('#input-corpus').val()]);
     } catch (e) {
@@ -53,7 +53,7 @@ $('#encode-text').click(function () {
     }
   } else {
     if (!models.hasOwnProperty(corpusOption)) {
-      models[corpusOption] = new stego.NGramModel(2);
+      models[corpusOption] = new stego.NGramModel(1);
       models[corpusOption].import(corpora[corpusOption]);
     }
   }
@@ -81,6 +81,32 @@ $('#encode-text').click(function () {
 $('#decode-text').click(function () {
   // Change button state.
   $('#decode-text').button('loading');
+  // Create or set ngramModel.
+  var corpusOption = $('#corpus-selector').val();
+  if (corpusOption === 'custom') {
+    if (models.hasOwnProperty(corpusOption)) {
+      delete models[corpusOption];
+    }
+    models[corpusOption] = new stego.NGramModel(1);
+    try {
+      models[corpusOption].import([$('#input-corpus').val()]);
+    } catch (e) {
+      if (e instanceof stego.NGramModelException) {
+        alert('Invalid corpus specified. See limitations.\n\n' +
+              'Error message: ' + e.message);
+        // Reset button state.
+        $('#decode-text').text('Decode Text');
+        $('#encode-text').button('reset');
+        return;
+      }
+    }
+  } else {
+    if (!models.hasOwnProperty(corpusOption)) {
+      models[corpusOption] = new stego.NGramModel(1);
+      models[corpusOption].import(corpora[corpusOption]);
+    }
+  }
+  codec.setModel(models[corpusOption]);
   // Decode text.
   try {
     $('#input-text').val(codec.decode($.trim($('#output-text').val())));
