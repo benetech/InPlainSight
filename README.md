@@ -1,6 +1,4 @@
-# In Plain Sight
-
-##In Plain Sight Text Obfuscation
+#In Plain Sight Text Obfuscation
 
 ###[Document Link](https://benetech.box.com/s/lckniqo7o91ywfxs1aqjfagdosmrjk52)
 
