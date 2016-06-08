@@ -25,4 +25,4 @@ Location: MTV-41-2-Seaside Training (35)
 
 #Contact Info
 John Higgins
-johnh@benetech.org
+johnh_at_benetech.org
