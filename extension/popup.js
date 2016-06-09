@@ -60,7 +60,9 @@ $('#encode-text').click(function () {
   codec.setModel(models[corpusOption]);
   // Encode text.
   try {
-    $('#output-text').val(codec.encode($('#input-text').val()));
+    var str = $('#input-text').val();
+    str = LZString.compressToUint8Array(str);
+    $('#output-text').val(codec.encode(str));
   } catch (e) {
     if (e instanceof stego.CodecException) {
       alert('Could not encode data.\n\n' +
@@ -109,7 +111,9 @@ $('#decode-text').click(function () {
   codec.setModel(models[corpusOption]);
   // Decode text.
   try {
-    $('#input-text').val(codec.decode($.trim($('#output-text').val())));
+    str = codec.decode($.trim($('#output-text').val()));
+    str = LZString.decompressFromUint8Array(str);
+    $('#input-text').val(str);
   } catch (e) {
     if (e instanceof stego.CodecException) {
       alert('Could not decode text.\n\n' +

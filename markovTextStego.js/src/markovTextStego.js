@@ -395,11 +395,7 @@ var MarkovTextStego = function () {
       for (i = 0; i < ngramModel.n; i++) {
         startWord.push(stego.lineDelimiter);
       }
-      // Create ordinal(char) array of data.
-      var dataByteArray = [];
-      for (i = 0; i < data.length; i++) {
-        dataByteArray.push(data.charCodeAt(i));
-      }
+      var dataByteArray = Array.prototype.slice.call(new Uint8Array(data));
       // Encode length of data first.
       var dataLength = dataByteArray.length;
       var dataLengthByteArray = [];
@@ -617,12 +613,7 @@ var MarkovTextStego = function () {
       var dataByteArray = bitField.getAllBytes();
       // Set status.
       this.busy = 0;
-      // Return data as a string.
-      var data = '';
-      for (i = 0; i < dataByteArray.length; i++) {
-        data += String.fromCharCode(dataByteArray[i]);
-      }
-      return data;
+      return dataByteArray;
     };
 
     /**
