@@ -641,10 +641,15 @@ var MarkovTextStego = function () {
       var originalMaxBits = maxBits;
       // Compute bit range for each word.
       for (i = 0; i < wordList.length; i++) {
-        bitRange = decodeWordToBitRange(wordList[i],
+        bitRange3 = decodeWordToBitRange(wordList[i],
                                         bitRange,
                                         priorWord,
                                         maxBits - bitField.length());
+        if (typeof bitRange3 === 'undefined') {
+          continue;
+        } else {
+          bitRange = bitRange3;
+        }
         // Determine priorWord for next iteration.
         priorWord.push(wordList[i].toLowerCase());
         priorWord = priorWord.slice(-ngramModel.n);
@@ -656,8 +661,7 @@ var MarkovTextStego = function () {
         }
         // Throw exception if prior word is invalid n-gram.
         if (ngramModel.getModel().hasOwnProperty(priorWord) === false) {
-          throw new stego.CodecException(
-            JSON.stringify(priorWord) + ' is an invalid n-gram.');
+          continue;
         }
         self.startWord = priorWord;
         // Simplify bit range, and add bits to BitField.
