@@ -5,7 +5,7 @@
 */
 const kKDFAlgorithm = 'PBKDF2';
 const kKDFSaltSize = 8;
-const kKDFIterations = 4096;
+const kKDFIterations = 1024 * 128;
 const kKDFHash = 'SHA-256';
 const kCipherAlgorithm = 'AES-GCM';
 const kCipherKeySize = 256;
