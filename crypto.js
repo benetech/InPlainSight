@@ -5,7 +5,7 @@
 */
 const kKDFAlgorithm = 'PBKDF2';
 const kKDFSaltSize = 8;
-const kKDFIterations = 4096;
+const kKDFIterations = 1024 * 128;
 const kKDFHash = 'SHA-256';
 const kCipherAlgorithm = 'AES-GCM';
 const kCipherKeySize = 256;
@@ -45,7 +45,7 @@ function derive(password, salt1, salt2)
   const usages = ['deriveBits', 'deriveKey'];
   const extractable = false;
   // Import the password as a 'key'
-  console.log('import');
+  //console.log('import');
   return crypto.subtle.importKey('raw', password_array, algorithm, extractable, usages).then(function(result) {
     password_key = result;
     // Derive encryption key
@@ -57,7 +57,7 @@ function derive(password, salt1, salt2)
       iterations: kKDFIterations,
       hash: {name: kKDFHash}
     };
-    console.log('deriveKey');
+    //console.log('deriveKey');
     return crypto.subtle.deriveKey(params, password_key, derived_algorithm, extractable, derived_usages);
   }).then(function(result) {
     derived_key = result;
@@ -68,7 +68,7 @@ function derive(password, salt1, salt2)
       iterations: kKDFIterations,
       hash: {name: kKDFHash}
     };
-    console.log('deriveBits');
+    //console.log('deriveBits');
     return crypto.subtle.deriveBits(params, password_key, kCipherIVSize);
   }).then(function(derived_iv) {
     return {
@@ -98,7 +98,7 @@ function encrypt(password, plain_text)
       iv: result.iv,
       tagLength: kCipherTagSize
     };
-    console.log('encrypt');
+    //console.log('encrypt');
     return crypto.subtle.encrypt(algorithm, result.key, plain_text);
   }).then(function(cipher_text) {
     // Concatenate salts with cipher_text.
@@ -130,7 +130,7 @@ function decrypt(password, cipher_text)
       iv: result.iv,
       tagLength: kCipherTagSize
     };
-    console.log('decrypt');
+    //console.log('decrypt');
     return crypto.subtle.decrypt(algorithm, result.key, raw_cipher_text);
   });
 }

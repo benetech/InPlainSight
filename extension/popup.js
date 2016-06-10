@@ -60,9 +60,12 @@ $('#encode-text').click(function () {
   codec.setModel(models[corpusOption]);
   // Encode text.
   try {
+    var password = $('#passphrase').val();
     var str = $('#input-text').val();
     str = LZString.compressToUint8Array(str);
-    $('#output-text').val(codec.encode(str));
+    encrypt(password, str).then(function(encrypted_data) {
+      $('#output-text').val(codec.encode(encrypted_data));
+    })
   } catch (e) {
     if (e instanceof stego.CodecException) {
       alert('Could not encode data.\n\n' +
@@ -111,9 +114,13 @@ $('#decode-text').click(function () {
   codec.setModel(models[corpusOption]);
   // Decode text.
   try {
+    var password = $('#passphrase').val();
     str = codec.decode($.trim($('#output-text').val()));
-    str = LZString.decompressFromUint8Array(str);
-    $('#input-text').val(str);
+    decrypt(password, Uint8Array.from(str)).then(function(decrypted_data) {
+      decrypted_data = new Uint8Array(decrypted_data);
+      str = LZString.decompressFromUint8Array(decrypted_data);
+      $('#input-text').val(str);
+    });
   } catch (e) {
     if (e instanceof stego.CodecException) {
       alert('Could not decode text.\n\n' +

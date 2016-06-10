@@ -13,6 +13,7 @@
     <script src="js/corpora.js"></script>
     <script src="markovTextStego.js"></script>
     <script src="lz-string.min.js"></script>
+    <script src="crypto.js"></script>
   </head>
   <body>
     <div id="demo-container">
@@ -21,9 +22,10 @@
           <!-- Corpus Selection Panel -->
           <div class="panel panel-info">
             <div class="panel-heading">
-              <h3 class="panel-title">Corpus Selection</h3>
+              <h3 class="panel-title">Settings</h3>
             </div>
             <div class="panel-body">
+              Corpus:
               <select id="corpus-selector" class="form-control">
                 <option value="prince">The Prince (Niccol&ograve; Machiavelli)</option>
                 <option value="revelations">Revelations (King James Version of the Bible)</option>
@@ -34,8 +36,12 @@
               <textarea id="input-corpus"
                         class="form-control"
                         placeholder="Enter corpus text here..."
-                        rows="10"
+                        rows="6"
                         disabled></textarea>
+              Passphrase:
+              <input id="passphrase"
+                     class="form-control"
+                     type="password">
             </div>
           </div>
         </div>
