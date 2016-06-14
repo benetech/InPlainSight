@@ -13,10 +13,10 @@ output = """/**
 corpora = {
 """
 
-for file in os.listdir('../corpus2'):
+for file in os.listdir('../corpus'):
   filename = file[:file.find(".txt")]
   output += "'" + filename + "': JSON.parse('["
-  with codecs.open('../corpus2/' + file, 'r',"utf-8") as text_file:
+  with codecs.open('../corpus/' + file, 'r',"utf-8") as text_file:
       text = text_file.read()
 
   startmatch = re.search(r'\*\*\*\s?START OF (THIS|THE) PROJECT GUTENBERG.*?\*\*\*',text)
@@ -25,9 +25,7 @@ for file in os.listdir('../corpus2'):
   endmatch = re.search(r'\*\*\*\s?END OF (THIS|THE) PROJECT',text)
   end = endmatch.start()
 
-  print(filename)
-  print(start)
-  print(end)
+  print("working on..."+filename)
     
   paragraphs = text[start:end].splitlines()
   
