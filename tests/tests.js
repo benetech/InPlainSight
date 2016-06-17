@@ -85,6 +85,7 @@ QUnit.test( "Stego reversibility", function( assert ) {
   model.import(corpora["prince"]);
   codec.setModel(model);
 
+  // Input length of codec.encode() cannot be 0.
   for (var i = 1; i < 1000; i = i * 4 + 1) {
     var str = randomString(i);
 
@@ -103,21 +104,23 @@ QUnit.test( "LZString+Stego reversibility", function( assert ) {
   var stego = new MarkovTextStego();
   var codec = new stego.Codec(null);
   var model = new stego.NGramModel(1);
-  model.import(corpora["prince"]);
-  codec.setModel(model);
+  $.each(corpora, function(key, value) {
+    model.import(corpora[key]);
+    codec.setModel(model);
 
-  for (var i = 1; i < 1000; i = i * 4 + 1) {
-    var str = randomString(i);
+    for (var i = 0; i < 1000; i = i * 10 + 1) {
+      var str = randomString(i);
 
-    var steg = codec.encode(LZString.compressToUint8Array(str));
-    assert.strictEqual(typeof steg, "string");
+      var steg = codec.encode(LZString.compressToUint8Array(str));
+      assert.strictEqual(typeof steg, "string");
 
-    var decoded = codec.decode($.trim(steg));
-    assert.ok(decoded instanceof ArrayBuffer);
+      var decoded = codec.decode($.trim(steg));
+      assert.ok(decoded instanceof ArrayBuffer);
 
-    var str2 = LZString.decompressFromUint8Array(new Uint8Array(decoded));
-    assert.strictEqual(str2, str, "Passed!" );
-  }
+      var str2 = LZString.decompressFromUint8Array(new Uint8Array(decoded));
+      assert.strictEqual(str2, str, "Passed!" );
+    }
+  });
 });
 
 var end_to_end_test = function(assert, plain, pw) {
@@ -145,7 +148,7 @@ QUnit.test( "End-to-end reversibility", function( assert ) {
   model.import(corpora["prince"]);
   codec.setModel(model);
 
-  for (var i = 1; i < 10000; i = i * 10 + 1) {
+  for (var i = 0; i < 10000; i = i * 10 + 1) {
     for (var j = 0; j < 20; j += 10) {
       var str = randomString(i);
       var pw = randomString(j);
