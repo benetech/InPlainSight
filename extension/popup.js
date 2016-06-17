@@ -34,6 +34,19 @@ function stegoDecode(stego, password) {
   });
 }
 
+// Populate the corpus selector
+$.each(corpora, function(key, value) {
+  if ($('#corpus-selector option[value="' + key + '"]').length == 0) {
+    $('#corpus-selector').append(
+      $("<option></option>")
+        .attr("value",key)
+        .text(key));
+  }
+});
+$('#corpus-selector').append($("<option></option>")
+  .attr("value", "custom")
+  .text("Custom..."));
+
 // Focus on input textarea.
 $('#input-text').focus();
 // When corpus selector changes:
