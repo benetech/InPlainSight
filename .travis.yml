@@ -1,0 +1,5 @@
+before_script:
+  - npm install grunt
+  - npm install grunt-contrib-qunit
+
+script: grunt test --verbose
