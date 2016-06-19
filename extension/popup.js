@@ -2,6 +2,38 @@
 var models = {};
 var stego = new MarkovTextStego();
 var codec = new stego.Codec(null);
+
+/**
+ * Compress and encrypt |str| using |password|, and hide in the steganographic
+ * text.
+ *
+ * @param {string} text
+ * @param {string} password
+ * @return {Promise that returns String}
+ */
+function stegoEncode(text, password) {
+  var compressed = LZString.compressToUint8Array(text);
+  return encrypt(password, compressed.buffer).then(function(encrypted_data) {
+    return codec.encode(encrypted_data);
+  })
+}
+
+/**
+ * Extract the data hidden in the steganographic text, decrypt with |password|,
+ * and uncompress.
+ *
+ * @param {string} stego
+ * @param {string} password
+ * @return {Promise that returns String}
+ */
+function stegoDecode(stego, password) {
+  var payload = codec.decode(stego);
+  return decrypt(password, payload).then(function(decrypted_data) {
+    decrypted_data = new Uint8Array(decrypted_data);
+    return LZString.decompressFromUint8Array(decrypted_data);
+  });
+}
+
 // Focus on input textarea.
 $('#input-text').focus();
 // When corpus selector changes:
@@ -60,12 +92,11 @@ $('#encode-text').click(function () {
   codec.setModel(models[corpusOption]);
   // Encode text.
   try {
-    var password = $('#passphrase').val();
-    var str = $('#input-text').val();
-    str = LZString.compressToUint8Array(str);
-    encrypt(password, str.buffer).then(function(encrypted_data) {
-      $('#output-text').val(codec.encode(encrypted_data));
-    })
+    stegoEncode($('#input-text').val(), $('#passphrase').val()).then(
+      function(stegoText) {
+        $('#output-text').val(stegoText);
+      }
+    )
   } catch (e) {
     if (e instanceof stego.CodecException) {
       alert('Could not encode data.\n\n' +
@@ -114,13 +145,11 @@ $('#decode-text').click(function () {
   codec.setModel(models[corpusOption]);
   // Decode text.
   try {
-    var password = $('#passphrase').val();
-    str = codec.decode($.trim($('#output-text').val()));
-    decrypt(password, str).then(function(decrypted_data) {
-      decrypted_data = new Uint8Array(decrypted_data);
-      str = LZString.decompressFromUint8Array(decrypted_data);
-      $('#input-text').val(str);
-    });
+    stegoDecode($.trim($('#output-text').val()), $('#passphrase').val()).then(
+      function(text) {
+        $('#input-text').val(text);
+      }
+    );
   } catch (e) {
     if (e instanceof stego.CodecException) {
       alert('Could not decode text.\n\n' +
