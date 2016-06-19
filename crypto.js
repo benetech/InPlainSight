@@ -84,7 +84,7 @@ function derive(password, salt1, salt2)
  *
  * @param {string} password
  * @param {ArrayBuffer} plain_text
- * @return {Promise}
+ * @return {Promise that returns Uint8Array}
  */
 function encrypt(password, plain_text)
 {
@@ -116,8 +116,8 @@ function encrypt(password, plain_text)
  * ArrayBuffer plain text.
  *
  * @param {string} password
- * @param {ArrayBuffer} cipher_text
- * @return {Promise}
+ * @param {Uint8Array} cipher_text
+ * @return {Promise that returns ArrayBuffer}
  */
 function decrypt(password, cipher_text)
 {

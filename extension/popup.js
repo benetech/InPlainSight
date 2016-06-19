@@ -116,7 +116,7 @@ $('#decode-text').click(function () {
   try {
     var password = $('#passphrase').val();
     str = codec.decode($.trim($('#output-text').val()));
-    decrypt(password, Uint8Array.from(str)).then(function(decrypted_data) {
+    decrypt(password, new Uint8Array(str)).then(function(decrypted_data) {
       decrypted_data = new Uint8Array(decrypted_data);
       str = LZString.decompressFromUint8Array(decrypted_data);
       $('#input-text').val(str);
