@@ -32,6 +32,11 @@ var crypto_test = function(assert, str, pw) {
 };
 
 QUnit.test( "Crypto tests", function( assert ) {
+  if (typeof crypto.subtle === 'undefined') {
+    // PhantomJS doesn't support WebCrypto.
+    assert.expect(0);
+    return;
+  }
   for (var i = 0; i < 100; i = i * 10 + 1) {
     for (var j = 0; j < 20; j += 10) {
       var str = randomString(i);
