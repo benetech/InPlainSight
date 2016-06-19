@@ -1,21 +1,21 @@
 # I suggest we remove importance.txt because it is not general enough. 
 
-import os, re, codecs
+import os, re, codecs, json
 
-f = codecs.open('../extension/js/corpora.js', 'w',"utf-8")
+f = codecs.open('../extension/js/corpora_new.js', 'w', "utf-8")
 # Write the header
-output = """/**
+f.write("""/**
  * Test corpora for markovTextStego.js.
  *
  * @author Zhiyu Li
  */
 
-corpora = {
-"""
+$.extend(corpora, {
+""")
 
 for file in os.listdir('../corpus'):
   filename = file[:file.find(".txt")]
-  output += "'" + filename + "': JSON.parse('["
+  f.write("'" + filename + "': JSON.parse(")
   with codecs.open('../corpus/' + file, 'r',"utf-8") as text_file:
       text = text_file.read()
 
@@ -27,17 +27,12 @@ for file in os.listdir('../corpus'):
 
   print("working on..."+filename)
     
-  paragraphs = text[start:end].splitlines()
-  
-  for paragraph in paragraphs:
-    if paragraph != "":
-      paragraph = paragraph.strip()
-      output += ('"' + paragraph.replace('\n', ' ').replace("'","\\'").replace('"',"\\'").replace(":","\\:").replace(";","\\;") + '", ')
-      output = output[:len(output)-1]
+  paragraphs = text[start:end].split("\n\n")
 
-  output = output[:len(output)-1]
-  output += "]'),\n"
+  paragraphs = [p.strip() for p in paragraphs if p != ""]
+  f.write(json.dumps(json.dumps(paragraphs)))
   
-output += "};\n"
-f.write(output)  
+  f.write("),\n")
+  
+f.write("});\n")
 f.close()
