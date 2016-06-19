@@ -63,7 +63,7 @@ $('#encode-text').click(function () {
     var password = $('#passphrase').val();
     var str = $('#input-text').val();
     str = LZString.compressToUint8Array(str);
-    encrypt(password, str).then(function(encrypted_data) {
+    encrypt(password, str.buffer).then(function(encrypted_data) {
       $('#output-text').val(codec.encode(encrypted_data));
     })
   } catch (e) {
@@ -116,7 +116,7 @@ $('#decode-text').click(function () {
   try {
     var password = $('#passphrase').val();
     str = codec.decode($.trim($('#output-text').val()));
-    decrypt(password, Uint8Array.from(str)).then(function(decrypted_data) {
+    decrypt(password, str).then(function(decrypted_data) {
       decrypted_data = new Uint8Array(decrypted_data);
       str = LZString.decompressFromUint8Array(decrypted_data);
       $('#input-text').val(str);

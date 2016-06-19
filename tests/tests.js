@@ -5,33 +5,50 @@ function randomString(len, charSet) {
   var randomString = '';
   for (var i = 0; i < len; i++) {
     var randomPoz = Math.floor(Math.random() * charSet.length);
-    randomString += charSet.substring(randomPoz,randomPoz+1);
+    randomString += charSet.substring(randomPoz, randomPoz + 1);
   }
   return randomString;
 }
 
-QUnit.test( "LZString tests", function( assert ) {
+function ab2str(buf) {
+  return String.fromCharCode.apply(null, new Uint16Array(buf));
+}
+
+function str2ab(str) {
+  var buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
+  var bufView = new Uint16Array(buf);
+  for (var i = 0, strLen = str.length; i < strLen; i++) {
+    bufView[i] = str.charCodeAt(i);
+  }
+  return buf;
+}
+
+QUnit.test( "LZString reversibility", function( assert ) {
   for (var i = 0; i < 1000; i++) {
     var str = randomString(i);
     var compressed = LZString.compressToUint8Array(str);
+    assert.ok(compressed instanceof Uint8Array);
     var decompressed = LZString.decompressFromUint8Array(compressed);
-    assert.equal(decompressed, str);
+    assert.strictEqual(decompressed, str);
   }
 });
 
-var crypto_test = function(assert, str, pw) {
+var crypto_test = function(assert, plain, pw) {
+  assert.ok(plain instanceof ArrayBuffer);
+  assert.strictEqual(typeof pw, "string");
+
   var done = assert.async();
-  encrypt(pw, LZString.compressToUint8Array(str)).then(function(encrypted_data) {
+  encrypt(pw, plain).then(function(encrypted_data) {
+    assert.ok(encrypted_data instanceof ArrayBuffer);
     decrypt(pw, encrypted_data).then(function(decrypted_data) {
-      decrypted_data = new Uint8Array(decrypted_data);
-      var decompressed = LZString.decompressFromUint8Array(decrypted_data);
-      assert.equal(decompressed, str);
+      assert.ok(decrypted_data instanceof ArrayBuffer);
+      assert.strictEqual(ab2str(plain), ab2str(decrypted_data));
       done();
     });
   })
 };
 
-QUnit.test( "Crypto tests", function( assert ) {
+QUnit.test( "Crypto reversibility", function( assert ) {
   if (typeof crypto.subtle === 'undefined') {
     // PhantomJS doesn't support WebCrypto.
     assert.expect(0);
@@ -41,23 +58,64 @@ QUnit.test( "Crypto tests", function( assert ) {
     for (var j = 0; j < 20; j += 10) {
       var str = randomString(i);
       var pw = randomString(j);
-      crypto_test(assert, str, pw);
+      crypto_test(assert, str2ab(str), pw);
     }
   }
 });
 
-QUnit.test( "Stego tests", function( assert ) {
+QUnit.test( "LZString+Crypto reversibility", function( assert ) {
+  if (typeof crypto.subtle === 'undefined') {
+    // PhantomJS doesn't support WebCrypto.
+    assert.expect(0);
+    return;
+  }
+  for (var i = 0; i < 100; i = i * 10 + 1) {
+    for (var j = 0; j < 20; j += 10) {
+      var str = randomString(i);
+      var pw = randomString(j);
+      crypto_test(assert, LZString.compressToUint8Array(str).buffer, pw);
+    }
+  }
+});
+
+QUnit.test( "Stego reversibility", function( assert ) {
   var stego = new MarkovTextStego();
   var codec = new stego.Codec(null);
   var model = new stego.NGramModel(1);
   model.import(corpora["prince"]);
   codec.setModel(model);
 
-  for (var i = 0; i < 1000; i = i * 4 + 1) {
+  for (var i = 1; i < 1000; i = i * 4 + 1) {
     var str = randomString(i);
-    var steg = codec.encode(LZString.compressToUint8Array(str));
+
+    var steg = codec.encode(str2ab(str));
+    assert.strictEqual(typeof steg, "string");
+
     var decoded = codec.decode($.trim(steg));
-    var decompressed = LZString.decompressFromUint8Array(decoded);
-    assert.equal(decompressed, str);
+    assert.ok(decoded instanceof ArrayBuffer);
+
+    var str2 = ab2str(decoded);
+    assert.strictEqual(str2, str, "Passed!" );
+  }
+});
+
+QUnit.test( "LZString+Stego reversibility", function( assert ) {
+  var stego = new MarkovTextStego();
+  var codec = new stego.Codec(null);
+  var model = new stego.NGramModel(1);
+  model.import(corpora["prince"]);
+  codec.setModel(model);
+
+  for (var i = 1; i < 1000; i = i * 4 + 1) {
+    var str = randomString(i);
+
+    var steg = codec.encode(LZString.compressToUint8Array(str));
+    assert.strictEqual(typeof steg, "string");
+
+    var decoded = codec.decode($.trim(steg));
+    assert.ok(decoded instanceof ArrayBuffer);
+
+    var str2 = LZString.decompressFromUint8Array(new Uint8Array(decoded));
+    assert.strictEqual(str2, str, "Passed!" );
   }
 });

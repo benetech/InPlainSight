@@ -378,7 +378,7 @@ var MarkovTextStego = function () {
     /**
      * Encode steganographic layer on top of data.
      *
-     * @param {string}     data          Data to be encoded.
+     * @param {ArrayBuffer} data         Data to be encoded.
      * @return {string}    Encoded data.
      */
     this.encode = function (data) {
@@ -585,7 +585,7 @@ var MarkovTextStego = function () {
      * Decode steganographic layer from text.
      *
      * @param {string}  text  The encoded data.
-     * @return {string}       The original data.
+     * @return {ArrayBuffer}       The original data.
      */
     this.decode = function (text) {
       // Reset number of decoded words.
@@ -610,10 +610,10 @@ var MarkovTextStego = function () {
       bitField = decodeWordListToBitField(dataWordList,
                                           this.startWord,
                                           dataLength * 8);
-      var dataByteArray = bitField.getAllBytes();
+      var dataByteArray = new Uint8Array(bitField.getAllBytes());
       // Set status.
       this.busy = 0;
-      return dataByteArray;
+      return dataByteArray.buffer;
     };
 
     /**
