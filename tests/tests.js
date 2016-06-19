@@ -119,3 +119,38 @@ QUnit.test( "LZString+Stego reversibility", function( assert ) {
     assert.strictEqual(str2, str, "Passed!" );
   }
 });
+
+var end_to_end_test = function(assert, plain, pw) {
+  assert.strictEqual(typeof plain, "string");
+  assert.strictEqual(typeof pw, "string");
+
+  var done = assert.async();
+  stegoEncode(plain, pw).then(function(stego) {
+    assert.strictEqual(typeof stego, "string");
+    stegoDecode(stego, pw).then(function(text) {
+      assert.strictEqual(typeof text, "string");
+      assert.strictEqual(plain, text);
+      done();
+    });
+  })
+};
+
+QUnit.test( "End-to-end reversibility", function( assert ) {
+  if (typeof crypto.subtle === 'undefined') {
+    // PhantomJS doesn't support WebCrypto.
+    assert.expect(0);
+    return;
+  }
+  var model = new stego.NGramModel(1);
+  model.import(corpora["prince"]);
+  codec.setModel(model);
+
+  for (var i = 1; i < 10000; i = i * 10 + 1) {
+    for (var j = 0; j < 20; j += 10) {
+      var str = randomString(i);
+      var pw = randomString(j);
+
+      end_to_end_test(assert, str, pw);
+    }
+  }
+});
