@@ -39,7 +39,7 @@ var crypto_test = function(assert, plain, pw) {
 
   var done = assert.async();
   encrypt(pw, plain).then(function(encrypted_data) {
-    assert.ok(encrypted_data instanceof Uint8Array);
+    assert.ok(encrypted_data instanceof ArrayBuffer);
     decrypt(pw, encrypted_data).then(function(decrypted_data) {
       assert.ok(decrypted_data instanceof ArrayBuffer);
       assert.strictEqual(ab2str(plain), ab2str(decrypted_data));

@@ -84,7 +84,7 @@ function derive(password, salt1, salt2)
  *
  * @param {string} password
  * @param {ArrayBuffer} plain_text
- * @return {Promise that returns Uint8Array}
+ * @return {Promise that returns ArrayBuffer}
  */
 function encrypt(password, plain_text)
 {
@@ -107,7 +107,7 @@ function encrypt(password, plain_text)
     final_output.set(salt1, 0);
     final_output.set(salt2, 8);
     final_output.set(cipher_text, 16);
-    return final_output;
+    return final_output.buffer;
   });
 }
 
@@ -116,11 +116,12 @@ function encrypt(password, plain_text)
  * ArrayBuffer plain text.
  *
  * @param {string} password
- * @param {Uint8Array} cipher_text
+ * @param {ArrayBuffer} cipher_text
  * @return {Promise that returns ArrayBuffer}
  */
 function decrypt(password, cipher_text)
 {
+  cipher_text = new Uint8Array(cipher_text);
   const salt1 = cipher_text.subarray(0, 8);
   const salt2 = cipher_text.subarray(8, 16);
   const raw_cipher_text = cipher_text.subarray(16);
