@@ -81,7 +81,7 @@ QUnit.test( "LZString+Crypto reversibility", function( assert ) {
 QUnit.test( "Stego reversibility", function( assert ) {
   var stego = new MarkovTextStego();
   var codec = new stego.Codec(null);
-  var model = new stego.NGramModel(1);
+  var model = new stego.NGramModel(2);
   model.import(corpora["prince"]);
   codec.setModel(model);
 
@@ -100,10 +100,38 @@ QUnit.test( "Stego reversibility", function( assert ) {
   }
 });
 
+function density_test(assert, ngram, density_limit) {
+  var stego = new MarkovTextStego();
+  var codec = new stego.Codec(null);
+  var model = new stego.NGramModel(ngram);
+  model.import(corpora["prince"]);
+  codec.setModel(model);
+
+  var iterations = 10;
+  var sum = 0;
+  for (var i = 0; i < iterations; i++) {
+    var str = randomString(100);
+    var input = str2ab(str);
+    var steg = codec.encode(input);
+    var ratio = steg.length / input.byteLength;
+    sum += ratio;
+  }
+  var avg_ratio = sum / iterations;
+  assert.ok(avg_ratio < density_limit);
+}
+
+QUnit.test( "Stego unigram density", function( assert ) {
+  density_test(assert, 1, 10);
+});
+
+QUnit.test( "Stego bigram density", function( assert ) {
+  density_test(assert, 2, 20);
+});
+
 QUnit.test( "LZString+Stego reversibility", function( assert ) {
   var stego = new MarkovTextStego();
   var codec = new stego.Codec(null);
-  var model = new stego.NGramModel(1);
+  var model = new stego.NGramModel(2);
   model.import(corpora["prince"]);
   codec.setModel(model);
 
@@ -124,7 +152,7 @@ QUnit.test( "LZString+Stego reversibility", function( assert ) {
 QUnit.test( "Stego word split", function( assert ) {
   var stego = new MarkovTextStego();
   var codec = new stego.Codec(null);
-  var model = new stego.NGramModel(1);
+  var model = new stego.NGramModel(2);
   model.import("El FBI reveló la grabación de la conversación entre el atacante de Orlando y los equipos de el equipo de negociación del despacho de la policía de Orlando minutos después de la masacre.");
   codec.setModel(model);
 
@@ -142,7 +170,7 @@ QUnit.test( "Corpus scan", function( assert ) {
   var stego = new MarkovTextStego();
   var codec = new stego.Codec(null);
   $.each(corpora, function(key, value) {
-    var model = new stego.NGramModel(1);
+    var model = new stego.NGramModel(2);
     model.import(corpora[key]);
     codec.setModel(model);
 
@@ -180,7 +208,7 @@ QUnit.test( "End-to-end reversibility", function( assert ) {
     assert.expect(0);
     return;
   }
-  var model = new stego.NGramModel(1);
+  var model = new stego.NGramModel(2);
   model.import(corpora["prince"]);
   codec.setModel(model);
 
