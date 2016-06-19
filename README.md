@@ -9,6 +9,10 @@ Encryption use has become easier in recent history, still more often than not, e
  
 ![alt text](https://github.com/benetech/InPlainSight/blob/master/ips.png?raw=true "Prototype Mockup")
 
+### Continuous Integration Status
+
+![Build Status](https://travis-ci.org/benetech/InPlainSight.svg?branch=master)
+
 #Contributors:
 
 | Full Name | Gihub Handle |email|
