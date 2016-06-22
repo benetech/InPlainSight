@@ -10,7 +10,7 @@ var MarkovTextStego = function () {
   // Configure options.
   this.lineDelimiter = '!|!'; // MUST NOT HAVE ANY ALPHABETICAL CHARACTERS!
   this.punctuationList = ['.', '.', '.', '.', '.', '.', '.', '.', '?', '!'];
-  this.matchPattern = /([\w\u00C0-\u1FFF\uAC00-\uD7AF][\w\.\?\-\\\/\u2019':&]*[\w\u00C0-\u1FFF\uAC00-\uD7AF])|[\w\u00C0-\u1FFF\uAC00-\uD7AF]|([:;=]\-?['*\(\)\[\]\\\/DdFPp$Ss0OoXx]+)/g;
+  this.matchPattern = /([\w\u00C0-\u1FFF\uAC00-\uD7AF][\w\u00C0-\u1FFF\uAC00-\uD7AF\.\?\-\\\/\u2019':&]*[\w\u00C0-\u1FFF\uAC00-\uD7AF])|[\w\u00C0-\u1FFF\uAC00-\uD7AF]+|([:;=]\-?['*\(\)\[\]\\\/DdFPp$Ss0OoXx]+)/g;
 
   this.BitField = function (data) {
     var self = this;

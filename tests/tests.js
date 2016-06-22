@@ -121,6 +121,23 @@ QUnit.test( "LZString+Stego reversibility", function( assert ) {
   }
 });
 
+QUnit.test( "Stego word split", function( assert ) {
+  var stego = new MarkovTextStego();
+  var codec = new stego.Codec(null);
+  var model = new stego.NGramModel(1);
+  model.import("El FBI reveló la grabación de la conversación entre el atacante de Orlando y los equipos de el equipo de negociación del despacho de la policía de Orlando minutos después de la masacre.");
+  codec.setModel(model);
+
+  for (var i = 0; i < 100; i++) {
+    var str = randomString(100);
+
+    var steg = codec.encode(str2ab(str));
+    assert.strictEqual(typeof steg, "string");
+    assert.ok(steg.indexOf("conversación") > -1);
+    assert.ok(steg.indexOf("después") > -1);
+  }
+});
+
 QUnit.test( "Corpus scan", function( assert ) {
   var stego = new MarkovTextStego();
   var codec = new stego.Codec(null);
