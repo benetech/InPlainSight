@@ -2,4 +2,6 @@ before_script:
   - npm install grunt
   - npm install grunt-contrib-qunit
 
-script: grunt test --verbose
+script:
+  - grunt test --verbose
+  - ( cd script && python source_text_preprocessor.py ) && git diff --quiet

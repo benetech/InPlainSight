@@ -13,7 +13,7 @@ f.write("""/**
 $.extend(corpora, {
 """)
 
-for file in os.listdir('../corpus'):
+for file in sorted(os.listdir('../corpus')):
   filename = file[:file.find(".txt")]
   f.write("'" + filename + "': JSON.parse(")
   with codecs.open('../corpus/' + file, 'r',"utf-8") as text_file:
