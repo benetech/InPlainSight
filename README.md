@@ -24,13 +24,5 @@ Encryption use has become easier in recent history, still more often than not, e
 |DArren Krahn| |
 
 
-#Day 2; June 9th, 10:00am
-
-Location: MTV-41-2-Seaside Training (35)
-
 #Contact Info
-John Higgins
-
-email: johnh_at_benetech.org
-
-SMS: seven seven three 351-8386
+John Higgins @johnhbenetech
