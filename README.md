@@ -21,6 +21,7 @@ Encryption use has become easier in recent history, still more often than not, e
 |Ruonan Duan|ronatuan| |
 |Ritendra Datta|___| |
 |Zhiyu Li|golzygo| |
+|DArren Krahn| |
 
 
 #Day 2; June 9th, 10:00am
