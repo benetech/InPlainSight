@@ -83,7 +83,7 @@ $('#encode-text').click(function () {
     if (models.hasOwnProperty(corpusOption)) {
       delete models[corpusOption];
     }
-    models[corpusOption] = new stego.NGramModel(1);
+    models[corpusOption] = new stego.NGramModel(2);
     try {
       models[corpusOption].import([$('#input-corpus').val()]);
     } catch (e) {
@@ -98,7 +98,7 @@ $('#encode-text').click(function () {
     }
   } else {
     if (!models.hasOwnProperty(corpusOption)) {
-      models[corpusOption] = new stego.NGramModel(1);
+      models[corpusOption] = new stego.NGramModel(2);
       models[corpusOption].import(corpora[corpusOption]);
     }
   }
@@ -136,7 +136,7 @@ $('#decode-text').click(function () {
     if (models.hasOwnProperty(corpusOption)) {
       delete models[corpusOption];
     }
-    models[corpusOption] = new stego.NGramModel(1);
+    models[corpusOption] = new stego.NGramModel(2);
     try {
       models[corpusOption].import([$('#input-corpus').val()]);
     } catch (e) {
@@ -151,7 +151,7 @@ $('#decode-text').click(function () {
     }
   } else {
     if (!models.hasOwnProperty(corpusOption)) {
-      models[corpusOption] = new stego.NGramModel(1);
+      models[corpusOption] = new stego.NGramModel(2);
       models[corpusOption].import(corpora[corpusOption]);
     }
   }
